@@ -10,6 +10,9 @@ public class AutoConnect : MonoBehaviour
     private void Start()
     {
         StartConnection();
+        
+        
+        
     }
 
     private async Task StartConnection()
