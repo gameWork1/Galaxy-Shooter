@@ -2,15 +2,17 @@ using System;
 using System.Collections.Generic;
 using Mirror;
 using Mirror.Discovery;
+using Network;
 using Network.NetworkDiscoveryCustom;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class NetworkDiscoveryHandler : MonoBehaviour
 {
-    [SerializeField] private NetworkDiscovery _networkDiscovery;
-    [SerializeField] private NetworkDiscoveryHUDCustom _networkDiscoveryHUD;
+    [Inject] private NetworkDiscovery _networkDiscovery;
+    [Inject] private NetworkDiscoveryHUDCustom _networkDiscoveryHUD;
     [SerializeField] private TMP_InputField _ipInputField;
     [SerializeField] private NetworkDiscoveryList _discoveryList;
 
@@ -48,7 +50,11 @@ public class NetworkDiscoveryHandler : MonoBehaviour
 
     public void StartClient(ServerResponse _serverResponse)
     {
-        _networkDiscovery.StopDiscovery();
-        NetworkManager.singleton.StartClient(_serverResponse.uri);
+        if (!(NetworkManager.singleton as CustomNetworkManager).isNicknameEmpty())
+        {
+            _networkDiscovery.StopDiscovery();
+            NetworkManager.singleton.StartClient(_serverResponse.uri);
+        }
+       
     }
 }
