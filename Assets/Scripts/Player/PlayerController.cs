@@ -1,11 +1,14 @@
 using System;
+using Logger;
 using Mirror;
+using Mirror.BouncyCastle.Math.Field;
 using Network;
 using Player;
 using TMPro;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Zenject;
 
 public class PlayerController : NetworkBehaviour, IDisposable
 {
@@ -15,8 +18,12 @@ public class PlayerController : NetworkBehaviour, IDisposable
 
     private Vector2 _direction;
     private InputActions _inputActions;
+
     [SyncVar(hook = nameof(ChangeNameText))]
     private string _playerName;
+
+    private LoggerManager _logger;
+    [SyncVar] public bool isJoined = false;
 
     #region NickName
     
@@ -25,8 +32,27 @@ public class PlayerController : NetworkBehaviour, IDisposable
     {
         if (NetworkManager.singleton is CustomNetworkManager manager)
         {
-            CmdSetNickname(manager.GetNickName());
+            string name = manager.GetNickName();
+            CmdSetNickname(name);
+            TargetLogJoin(name);
         }
+    }
+
+    [Client]
+    public void TargetLogJoin( string name)
+    {
+        if (!isJoined)
+        {
+            isJoined = true;
+            CmdLogJoin(name);
+        }
+           
+    }
+
+    [Command(requiresAuthority = false)]
+    private void CmdLogJoin(string name)
+    {
+        _logger.AddPlayerConnectedMessage(name);
     }
 
     [Command(requiresAuthority = false)]
@@ -48,19 +74,25 @@ public class PlayerController : NetworkBehaviour, IDisposable
     }
 
     #endregion
-    
-    
-    
-    void Start()
+
+    public override void OnStartClient()
+    {
+        _logger = FindObjectOfType<LoggerManager>();
+    }
+
+    private void Start()
     {
         if (!isLocalPlayer) return;
-        
-        FindAnyObjectByType<CinemachineCamera>().Follow = transform;
+            
+        CinemachineCamera _camera = FindAnyObjectByType<CinemachineCamera>();
+        _camera.Follow = transform;
+        _camera.transform.position = transform.position;
         _inputActions = new InputActions();
         
         _inputActions.Player.Enable();
         _inputActions.Player.Move.performed += ChangeDirection;
         _inputActions.Player.Move.canceled += ChangeDirection;
+        
     }
 
     private void ChangeDirection(InputAction.CallbackContext _context)
@@ -77,6 +109,7 @@ public class PlayerController : NetworkBehaviour, IDisposable
     {
         _inputActions.Player.Move.performed -= ChangeDirection;
         _inputActions.Player.Move.canceled -= ChangeDirection;
+    
         _inputActions.Player.Disable();
     }
 }
