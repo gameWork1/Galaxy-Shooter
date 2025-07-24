@@ -29,6 +29,7 @@ public class PlayerController : NetworkBehaviour, IDisposable
 
     private LoggerManager _logger;
     [SyncVar] public bool isJoined = false;
+    private bool isUsing = false;
 
     #region NickName
     
@@ -99,6 +100,11 @@ public class PlayerController : NetworkBehaviour, IDisposable
         
     }
 
+    public void SetUsing(bool active)
+    {
+        isUsing = active;
+    }
+
     private void ChangeDirection(InputAction.CallbackContext _context)
     {
         _direction = _context.ReadValue<Vector2>();
@@ -106,7 +112,8 @@ public class PlayerController : NetworkBehaviour, IDisposable
     
     private void FixedUpdate()
     {
-        _rb.linearVelocity = _direction * _speed;
+        if(!isUsing)
+            _rb.linearVelocity = _direction * _speed;
     }
 
     public void Dispose()
