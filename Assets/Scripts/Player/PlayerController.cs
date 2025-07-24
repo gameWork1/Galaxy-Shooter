@@ -22,6 +22,11 @@ public class PlayerController : NetworkBehaviour, IDisposable
     [SyncVar(hook = nameof(ChangeNameText))]
     private string _playerName;
 
+    public string PlayerName
+    {
+        get { return _playerName; }
+    }
+
     private LoggerManager _logger;
     [SyncVar] public bool isJoined = false;
 
@@ -34,23 +39,23 @@ public class PlayerController : NetworkBehaviour, IDisposable
         {
             string name = manager.GetNickName();
             CmdSetNickname(name);
-            TargetLogJoin(name);
+            LogJoin(name);
         }
     }
 
     [Client]
-    public void TargetLogJoin( string name)
+    public void LogJoin(string name)
     {
         if (!isJoined)
         {
             isJoined = true;
-            CmdLogJoin(name);
+            CmdLogInJoin(name);
         }
            
     }
-
+    
     [Command(requiresAuthority = false)]
-    private void CmdLogJoin(string name)
+    private void CmdLogInJoin(string name)
     {
         _logger.AddPlayerConnectedMessage(name);
     }
@@ -79,7 +84,6 @@ public class PlayerController : NetworkBehaviour, IDisposable
     {
         _logger = FindObjectOfType<LoggerManager>();
     }
-
     private void Start()
     {
         if (!isLocalPlayer) return;

@@ -13,8 +13,6 @@ namespace Logger
         {
             GameObject _messageObj = Instantiate(_messagePrefab, _parent);
             
-            NetworkServer.Spawn(_messageObj.gameObject);
-            
             _messageObj.GetComponent<LoggerMessage>().SetMessageText(text);
         }
         

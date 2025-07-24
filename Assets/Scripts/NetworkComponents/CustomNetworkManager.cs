@@ -17,7 +17,7 @@ namespace Network
         public bool isNicknameEmpty() => string.IsNullOrEmpty(_playerName) || _playerName == "";
 
         public string GetNickName() => _playerName;
-        
+
         public void StartHostDiscovery()
         {
             if (!isNicknameEmpty())
@@ -35,16 +35,13 @@ namespace Network
             GameObject player = Instantiate(playerPrefab, startPos.position, startPos.rotation);
             NetworkServer.AddPlayerForConnection(conn, player);
             
-
             PlayerController _player = player.GetComponent<PlayerController>();
             
             if (_player != null)
             {
                 _player.TargetSetUpLocalNickname(conn);
-                // _player.TargetLogJoin(conn);
             }else Debug.Log(1);
-            
-          
         }
+        
     }
 }
