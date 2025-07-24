@@ -18,6 +18,7 @@ namespace Chat
         
         private PlayerController _player;
         private InputActions _inputActions;
+        private bool isEditing = false;
 
         private void Start()
         {
@@ -52,9 +53,14 @@ namespace Chat
             }
         }
 
+        public void SetIsEditing(bool isEdit)
+        {
+            isEditing = isEdit;
+        }
+
         private void Update()
         {
-            if (_inputActions.Player.Chat.WasPressedThisFrame())
+            if (_inputActions.Player.Chat.WasPressedThisFrame() && !isEditing)
             {
                 _player.SetUsing(!_inputUI.active);
                 _inputUI.SetActive(!_inputUI.active);
