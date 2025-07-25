@@ -23,7 +23,7 @@ namespace Chat
         private void Start()
         {
             _inputActions = new InputActions();
-            _inputActions.Player.Enable();
+            _inputActions.Chat.Enable();
             _inputUI.SetActive(false);
         }
 
@@ -47,10 +47,13 @@ namespace Chat
                 CmdAddMessage(new ChatMessage()
                 {
                     author = _player.PlayerName,
-                    message = _messageField.text
+                    message = _messageField.text.Replace("\\", "\\\\").Replace("\n", "\\n")
                 });
                 _messageField.text = "";
             }
+            SetIsEditing(false);
+            _inputUI.SetActive(false);
+            _player.SetUsing(false);
         }
 
         public void SetIsEditing(bool isEdit)
@@ -60,10 +63,20 @@ namespace Chat
 
         private void Update()
         {
-            if (_inputActions.Player.Chat.WasPressedThisFrame() && !isEditing)
+            if (_inputActions.Chat.Toggle.WasPressedThisFrame() && !isEditing)
             {
                 _player.SetUsing(!_inputUI.active);
                 _inputUI.SetActive(!_inputUI.active);
+                if (_inputUI.active)
+                {
+                    _messageField.ActivateInputField();
+                    isEditing = true;
+                }
+            }
+
+            if (_inputUI.active && _inputActions.Chat.Send.WasPressedThisFrame())
+            {
+                AddMessage();
             }
         }
 

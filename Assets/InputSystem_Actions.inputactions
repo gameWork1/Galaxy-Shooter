@@ -40,15 +40,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Chat",
-                    "type": "Button",
-                    "id": "aec7adba-26b5-43d3-94f5-582290ba947a",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -304,15 +295,52 @@
                     "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Chat",
+            "id": "d7979f38-eb6b-491b-8cea-55423ec03c6d",
+            "actions": [
+                {
+                    "name": "Toggle",
+                    "type": "Button",
+                    "id": "5e56c8f3-0cc4-4dd1-8f9e-e5dd27aa6c69",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
+                    "name": "Send",
+                    "type": "Button",
+                    "id": "e56c323d-1a74-47b2-9578-613d05edca9e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
                     "name": "",
-                    "id": "7274b86f-fc15-4d4b-ad55-e802ff21f495",
+                    "id": "36d8d601-11a2-4dbd-88ac-2d149b7dc62a",
                     "path": "<Keyboard>/t",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Chat",
+                    "action": "Toggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5102b959-2dff-4a9e-b12e-5253b42d3eda",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Send",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

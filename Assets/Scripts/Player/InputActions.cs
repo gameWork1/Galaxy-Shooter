@@ -64,15 +64,6 @@ namespace Player
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Chat"",
-                    ""type"": ""Button"",
-                    ""id"": ""aec7adba-26b5-43d3-94f5-582290ba947a"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -328,15 +319,52 @@ namespace Player
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Chat"",
+            ""id"": ""d7979f38-eb6b-491b-8cea-55423ec03c6d"",
+            ""actions"": [
+                {
+                    ""name"": ""Toggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""5e56c8f3-0cc4-4dd1-8f9e-e5dd27aa6c69"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Send"",
+                    ""type"": ""Button"",
+                    ""id"": ""e56c323d-1a74-47b2-9578-613d05edca9e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
                     ""name"": """",
-                    ""id"": ""7274b86f-fc15-4d4b-ad55-e802ff21f495"",
+                    ""id"": ""36d8d601-11a2-4dbd-88ac-2d149b7dc62a"",
                     ""path"": ""<Keyboard>/t"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Chat"",
+                    ""action"": ""Toggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5102b959-2dff-4a9e-b12e-5253b42d3eda"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Send"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -412,12 +440,16 @@ namespace Player
             m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
             m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
             m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
-            m_Player_Chat = m_Player.FindAction("Chat", throwIfNotFound: true);
+            // Chat
+            m_Chat = asset.FindActionMap("Chat", throwIfNotFound: true);
+            m_Chat_Toggle = m_Chat.FindAction("Toggle", throwIfNotFound: true);
+            m_Chat_Send = m_Chat.FindAction("Send", throwIfNotFound: true);
         }
 
         ~@InputActions()
         {
             UnityEngine.Debug.Assert(!m_Player.enabled, "This will cause a leak and performance issues, InputActions.Player.Disable() has not been called.");
+            UnityEngine.Debug.Assert(!m_Chat.enabled, "This will cause a leak and performance issues, InputActions.Chat.Disable() has not been called.");
         }
 
         public void Dispose()
@@ -483,7 +515,6 @@ namespace Player
         private readonly InputAction m_Player_Attack;
         private readonly InputAction m_Player_Interact;
         private readonly InputAction m_Player_Jump;
-        private readonly InputAction m_Player_Chat;
         public struct PlayerActions
         {
             private @InputActions m_Wrapper;
@@ -492,7 +523,6 @@ namespace Player
             public InputAction @Attack => m_Wrapper.m_Player_Attack;
             public InputAction @Interact => m_Wrapper.m_Player_Interact;
             public InputAction @Jump => m_Wrapper.m_Player_Jump;
-            public InputAction @Chat => m_Wrapper.m_Player_Chat;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -514,9 +544,6 @@ namespace Player
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
-                @Chat.started += instance.OnChat;
-                @Chat.performed += instance.OnChat;
-                @Chat.canceled += instance.OnChat;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -533,9 +560,6 @@ namespace Player
                 @Jump.started -= instance.OnJump;
                 @Jump.performed -= instance.OnJump;
                 @Jump.canceled -= instance.OnJump;
-                @Chat.started -= instance.OnChat;
-                @Chat.performed -= instance.OnChat;
-                @Chat.canceled -= instance.OnChat;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -553,6 +577,60 @@ namespace Player
             }
         }
         public PlayerActions @Player => new PlayerActions(this);
+
+        // Chat
+        private readonly InputActionMap m_Chat;
+        private List<IChatActions> m_ChatActionsCallbackInterfaces = new List<IChatActions>();
+        private readonly InputAction m_Chat_Toggle;
+        private readonly InputAction m_Chat_Send;
+        public struct ChatActions
+        {
+            private @InputActions m_Wrapper;
+            public ChatActions(@InputActions wrapper) { m_Wrapper = wrapper; }
+            public InputAction @Toggle => m_Wrapper.m_Chat_Toggle;
+            public InputAction @Send => m_Wrapper.m_Chat_Send;
+            public InputActionMap Get() { return m_Wrapper.m_Chat; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(ChatActions set) { return set.Get(); }
+            public void AddCallbacks(IChatActions instance)
+            {
+                if (instance == null || m_Wrapper.m_ChatActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_ChatActionsCallbackInterfaces.Add(instance);
+                @Toggle.started += instance.OnToggle;
+                @Toggle.performed += instance.OnToggle;
+                @Toggle.canceled += instance.OnToggle;
+                @Send.started += instance.OnSend;
+                @Send.performed += instance.OnSend;
+                @Send.canceled += instance.OnSend;
+            }
+
+            private void UnregisterCallbacks(IChatActions instance)
+            {
+                @Toggle.started -= instance.OnToggle;
+                @Toggle.performed -= instance.OnToggle;
+                @Toggle.canceled -= instance.OnToggle;
+                @Send.started -= instance.OnSend;
+                @Send.performed -= instance.OnSend;
+                @Send.canceled -= instance.OnSend;
+            }
+
+            public void RemoveCallbacks(IChatActions instance)
+            {
+                if (m_Wrapper.m_ChatActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            public void SetCallbacks(IChatActions instance)
+            {
+                foreach (var item in m_Wrapper.m_ChatActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_ChatActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        public ChatActions @Chat => new ChatActions(this);
         private int m_KeyboardMouseSchemeIndex = -1;
         public InputControlScheme KeyboardMouseScheme
         {
@@ -604,7 +682,11 @@ namespace Player
             void OnAttack(InputAction.CallbackContext context);
             void OnInteract(InputAction.CallbackContext context);
             void OnJump(InputAction.CallbackContext context);
-            void OnChat(InputAction.CallbackContext context);
+        }
+        public interface IChatActions
+        {
+            void OnToggle(InputAction.CallbackContext context);
+            void OnSend(InputAction.CallbackContext context);
         }
     }
 }
