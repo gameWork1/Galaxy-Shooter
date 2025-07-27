@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Chat
 {
-    public class ChatManager : NetworkBehaviour
+    public class ChatManager : NetworkBehaviour, IDisposable
     {
         [SerializeField] private TMP_Text _chatText;
         [SerializeField] private TMP_InputField _messageField;
@@ -90,6 +90,11 @@ namespace Chat
         private void RpcAddMessage(ChatMessage message)
         {
             _chatText.text += (_chatText.text != "" ? "\n" : "") + $"<color=yellow>{message.author}</color>: {message.message}";
+        }
+
+        public void Dispose()
+        {
+            _inputActions.Chat.Disable();
         }
     }
 }
