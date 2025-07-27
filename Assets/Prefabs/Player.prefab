@@ -193,6 +193,7 @@ MonoBehaviour:
   syncInterval: 0
   _speed: 5
   _rb: {fileID: 8816313731135058347}
+  _collider: {fileID: 8241526724084585449}
   _nicknameManager: {fileID: 5899642057634701478}
   _healthManager: {fileID: 1988206039549004344}
   _gun: {fileID: 6104240273938923968}

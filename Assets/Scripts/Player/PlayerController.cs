@@ -11,6 +11,7 @@ public class PlayerController : NetworkBehaviour, IDisposable
 {
     [SerializeField] private float _speed;
     [SerializeField] private Rigidbody2D _rb;
+    [SerializeField] private Collider2D _collider;
     [SerializeField] private NicknameManager _nicknameManager;
     [SerializeField] private HealthManager _healthManager;
     [SerializeField] private Gun _gun;
@@ -71,6 +72,7 @@ public class PlayerController : NetworkBehaviour, IDisposable
     {
         isDead = true;
         _visualObjects.SetActive(false);
+        _collider.isTrigger = true;
         CmdDead();
     }
 
@@ -78,6 +80,7 @@ public class PlayerController : NetworkBehaviour, IDisposable
     private void CmdDead()
     {
         _visualObjects.SetActive(false);
+        _collider.isTrigger = true;
     }
 
     public void Respawn()
@@ -86,6 +89,7 @@ public class PlayerController : NetworkBehaviour, IDisposable
         isDead = false;
         transform.position = _startPosition;
         _visualObjects.SetActive(true);
+        _collider.isTrigger = false;
         CmdRespawn();
     }
 
@@ -93,6 +97,7 @@ public class PlayerController : NetworkBehaviour, IDisposable
     private void CmdRespawn()
     {
         _visualObjects.SetActive(true);
+        _collider.isTrigger = false;
     }
 
     public void SetUsing(bool active)
