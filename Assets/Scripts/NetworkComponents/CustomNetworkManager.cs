@@ -3,11 +3,12 @@ using Mirror;
 using Mirror.Discovery;
 using ModestTree;
 using UnityEngine;
+using Utp;
 using Zenject;
 
 namespace Network
 {
-    public class CustomNetworkManager : NetworkManager
+    public class CustomNetworkManager : RelayNetworkManager 
     {
         private string _playerName;
         [Inject] private NetworkDiscovery _networkDiscovery;
@@ -25,8 +26,25 @@ namespace Network
                 StartHost();
                 _networkDiscovery.AdvertiseServer();
             }
-            
         }
+
+        public void StartRelayHost()
+        {
+            if (!isNicknameEmpty())
+            {
+                StartRelayHost(6, null);
+            }
+        }
+
+        public void StartRelayClient()
+        {
+            if (!isNicknameEmpty())
+            {
+                JoinRelayServer();
+            }
+        }
+        
+        
 
         public override void OnServerAddPlayer(NetworkConnectionToClient conn)
         {

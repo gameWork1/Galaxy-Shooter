@@ -8,5 +8,6 @@ namespace Player
         public TMP_Text AmmoText;
         public GameObject DeadPanel;
         public TMP_Text DeadTextCount;
+        public TMP_Text RelayCodeText;
     }
 }

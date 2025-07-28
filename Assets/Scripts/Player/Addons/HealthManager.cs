@@ -14,6 +14,8 @@ namespace Player
         [SerializeField] private PlayerController _player;
         [SyncVar(hook = nameof(OnChangeHealth))] private int health;
         [SyncVar(hook = nameof(OnChangeStateDead))] private bool isDead;
+        
+        private Coroutine _deadTimerCoroutine;
 
         public int Health
         {
@@ -34,10 +36,11 @@ namespace Player
             if(isDead) _player.Dead();
             else _player.Respawn();
 
-            if (NetworkClient.connection == GetComponent<NetworkIdentity>().connectionToServer)
+            if (_player.isLocalPlayer)
             {
                 _uiManager.DeadPanel.SetActive(isDead);
-                StartCoroutine(DeadTimeTimer(_uiManager.DeadTextCount));
+
+                if(isDead) StartCoroutine(DeadTimeTimer(_uiManager.DeadTextCount));
             }
         }
 
@@ -46,17 +49,9 @@ namespace Player
             health = newHealth;
             float amount = ((float)health) / ((float)maxHealth);
             SetHealthBar(amount);
-            CmdSetHealthBar(amount);
         }
         
         private void SetHealthBar(float amount)
-        {
-            _healthBar.fillAmount = amount;
-            CmdSetHealthBar(amount);
-        }
-
-        [Command(requiresAuthority = false)]
-        private void CmdSetHealthBar(float amount)
         {
             _healthBar.fillAmount = amount;
         }
