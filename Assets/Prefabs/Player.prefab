@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.113}
   m_SizeDelta: {x: 3.863, y: 0.3769}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &744479160971480948
@@ -194,6 +194,7 @@ MonoBehaviour:
   _speed: 5
   _rb: {fileID: 8816313731135058347}
   _collider: {fileID: 8241526724084585449}
+  _animator: {fileID: 38333429682143554}
   _nicknameManager: {fileID: 5899642057634701478}
   _healthManager: {fileID: 1988206039549004344}
   _gun: {fileID: 6104240273938923968}
@@ -296,7 +297,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.034529507, y: -0.0016309917}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -306,7 +307,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.81913126, y: 1.003262}
   m_EdgeRadius: 0
 --- !u!114 &2886577489116820968
 MonoBehaviour:
@@ -503,7 +504,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0121, y: 0.666}
+  m_AnchoredPosition: {x: 0.0121, y: -0.204}
   m_SizeDelta: {x: 2.6848, y: 0.2382}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3694904015149975074
@@ -690,7 +691,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5883201992125245768}
   - component: {fileID: 524085832553545862}
+  - component: {fileID: 9075889088923813859}
   - component: {fileID: 1685552677273998242}
+  - component: {fileID: 38333429682143554}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
@@ -769,6 +772,23 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &9075889088923813859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9086071128381410059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f6f3bf89aa97405989c802ba270f815, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  clientAuthority: 1
+  animator: {fileID: 38333429682143554}
 --- !u!114 &1685552677273998242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -803,6 +823,28 @@ MonoBehaviour:
   positionSensitivity: 0.01
   rotationSensitivity: 0.01
   scaleSensitivity: 0.01
+--- !u!95 &38333429682143554
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9086071128381410059}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4645c012e04a2654187218f22f37aad2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &2479615580295467995
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -859,6 +901,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GunPistol
       objectReference: {fileID: 0}
+    - target: {fileID: 8565779508773933595, guid: 797cf79ed9db3e04b9184ddcbf8dde13, type: 3}
+      propertyPath: _player
+      value: 
+      objectReference: {fileID: 5336221392141039815}
     m_RemovedComponents:
     - {fileID: 573510896715912560, guid: 797cf79ed9db3e04b9184ddcbf8dde13, type: 3}
     m_RemovedGameObjects: []

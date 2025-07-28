@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5503494322368507304}
   - component: {fileID: 2295061416681541322}
+  - component: {fileID: 6087907456833259017}
   m_Layer: 0
   m_Name: GunSprite
   m_TagString: Untagged
@@ -88,6 +89,52 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!61 &6087907456833259017
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5275781426061417639}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.41206962, y: 0.009844631}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.6875, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.75085056, y: 0.74403864}
+  m_EdgeRadius: 0
 --- !u!1 &5796917650050425581
 GameObject:
   m_ObjectHideFlags: 0
@@ -141,7 +188,6 @@ MonoBehaviour:
   _bulletPrefab: {fileID: 5006006416506123310, guid: 0871bf09205d5924bb51eb30e96dcbfa, type: 3}
   _gunConfig: {fileID: 11400000, guid: 44bea254b52887b4a9f885bfac8cee70, type: 2}
   _startPosition: {fileID: 1917858873624534083}
-  _gunRenderer: {fileID: 2295061416681541322}
 --- !u!114 &8010733236361244831
 MonoBehaviour:
   m_ObjectHideFlags: 0

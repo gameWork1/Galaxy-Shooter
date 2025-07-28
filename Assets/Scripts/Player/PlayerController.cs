@@ -12,6 +12,7 @@ public class PlayerController : NetworkBehaviour, IDisposable
     [SerializeField] private float _speed;
     [SerializeField] private Rigidbody2D _rb;
     [SerializeField] private Collider2D _collider;
+    [SerializeField] private Animator _animator;
     [SerializeField] private NicknameManager _nicknameManager;
     [SerializeField] private HealthManager _healthManager;
     [SerializeField] private Gun _gun;
@@ -19,13 +20,23 @@ public class PlayerController : NetworkBehaviour, IDisposable
     [SerializeField] private GameObject _spriteGameObject;
     [SerializeField] private GameObject _visualObjects;
     [SerializeField] private int _deadTime;
-    
+
+    public int Health
+    {
+        get { return _healthManager.Health; }
+    }
     private Vector2 _direction;
     private Vector3 _startPosition;
     private InputActions _inputActions;
     private bool isUsing = false;
-    private bool isDead;
-    
+    private bool isDead = false;
+    [SyncVar(hook = nameof(OnChangeTrigger))] private bool isTrigger;
+
+    private void OnChangeTrigger(bool oldTrigger, bool newTrigger)
+    {
+        isTrigger = newTrigger;
+        _collider.isTrigger = newTrigger;
+    }
 
     public string PlayerName
     {
@@ -72,7 +83,6 @@ public class PlayerController : NetworkBehaviour, IDisposable
     {
         isDead = true;
         _visualObjects.SetActive(false);
-        _collider.isTrigger = true;
         CmdDead();
     }
 
@@ -80,7 +90,8 @@ public class PlayerController : NetworkBehaviour, IDisposable
     private void CmdDead()
     {
         _visualObjects.SetActive(false);
-        _collider.isTrigger = true;
+        _rb.linearVelocity = Vector2.zero;
+        isTrigger = true;
     }
 
     public void Respawn()
@@ -89,7 +100,6 @@ public class PlayerController : NetworkBehaviour, IDisposable
         isDead = false;
         transform.position = _startPosition;
         _visualObjects.SetActive(true);
-        _collider.isTrigger = false;
         CmdRespawn();
     }
 
@@ -97,7 +107,7 @@ public class PlayerController : NetworkBehaviour, IDisposable
     private void CmdRespawn()
     {
         _visualObjects.SetActive(true);
-        _collider.isTrigger = false;
+        isTrigger = false;
     }
 
     public void SetUsing(bool active)
@@ -113,6 +123,9 @@ public class PlayerController : NetworkBehaviour, IDisposable
 
         if (_direction.x > 0 && !isFacingRight) Flip();
         else if (_direction.x < 0 && isFacingRight) Flip();
+        
+        if(_direction != Vector2.zero) _animator.SetBool("isWalk", true);
+        else _animator.SetBool("isWalk", false);
     }
 
     private void Flip()

@@ -21,5 +21,11 @@ namespace Logger
         {
             AddMessage($"К игре присоединился игрок <color=red>{playerName}</color>!");
         }
+
+        [Server]
+        public void AddPlayerKillMessage(string killerName, string diePlayerName)
+        {
+            AddMessage($"Игрок <color=red>{killerName}</color> уничтожил игрока <color=green>{diePlayerName}</color>!");
+        }
     }
 }

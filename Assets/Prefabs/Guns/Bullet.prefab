@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7629611350705587983}
   - component: {fileID: 8031378352682650359}
   - component: {fileID: 3943895845472518834}
+  - component: {fileID: -1383176144716795019}
   - component: {fileID: 3456268592101206838}
   - component: {fileID: 7197095591505161544}
   m_Layer: 0
@@ -106,6 +107,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
+  _bulletDestroyEffect: {fileID: 8194507234625567363, guid: 01bebf8b3a1a07a479c7851de4193c71, type: 3}
 --- !u!61 &3943895845472518834
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -152,6 +154,33 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.6686014, y: 0.33583534}
   m_EdgeRadius: 0
+--- !u!50 &-1383176144716795019
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5006006416506123310}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!114 &3456268592101206838
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,7 +210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a553cb17010b2403e8523b558bffbc14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 1
+  syncDirection: 0
   syncMode: 0
   syncInterval: 0
   target: {fileID: 6576728083944545370}

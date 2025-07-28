@@ -14,6 +14,11 @@ namespace Player
         [SerializeField] private PlayerController _player;
         [SyncVar(hook = nameof(OnChangeHealth))] private int health;
         [SyncVar(hook = nameof(OnChangeStateDead))] private bool isDead;
+
+        public int Health
+        {
+            get { return health; }
+        }
         private UIManager _uiManager;
         
         private void Start()
@@ -59,7 +64,6 @@ namespace Player
         public void TakeDamage(int damage)
         {
             CmdTakeDamage(damage);
-            
         }
 
         [Command(requiresAuthority = false)]

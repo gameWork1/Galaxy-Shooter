@@ -1,4 +1,5 @@
 using System;
+using Logger;
 using Mirror;
 using Mirror.BouncyCastle.Math.Field;
 using TMPro;
@@ -11,8 +12,10 @@ namespace Player.Gun
         [SerializeField] private GameObject _bulletPrefab;
         [SerializeField] private GunSO _gunConfig;
         [SerializeField] private Transform _startPosition;
+        [SerializeField] private PlayerController _player;
         
         private UIManager _uiManager;
+        private LoggerManager _logger;
         
         private int ammoCount;
         private float shootDelay;
@@ -21,12 +24,14 @@ namespace Player.Gun
         private void Start()
         {
             _uiManager = FindObjectOfType<UIManager>();
+            _logger = FindObjectOfType<LoggerManager>();
             ChangeAmmoCount(_gunConfig.maxAmmoCount);
         }
 
         private void ChangeAmmoCount(int count)
         {
             ammoCount = count;
+            
             _uiManager.AmmoText.text = $"{ammoCount}/{_gunConfig.maxAmmoCount}";
         }
 
@@ -35,7 +40,7 @@ namespace Player.Gun
         {
             if (shootDelay <= 0 && ammoCount > 0)
             {
-                CmdShoot(NetworkClient.connection.identity.netId);
+                CmdShoot(NetworkClient.connection.identity.netId, _startPosition.position, transform.rotation);
                 shootDelay = _gunConfig.shootDelay;
                 ChangeAmmoCount(ammoCount - 1);
                 if (ammoCount == 0)
@@ -47,13 +52,13 @@ namespace Player.Gun
         }
 
         [Command(requiresAuthority = false)]
-        private void CmdShoot(uint id)
+        private void CmdShoot(uint id, Vector3 position, Quaternion rotation)
         {
-            GameObject bullet = Instantiate(_bulletPrefab, _startPosition.position, transform.rotation);
+            GameObject bullet = Instantiate(_bulletPrefab, position, rotation);
             
             NetworkServer.Spawn(bullet);
             
-            bullet.GetComponent<Bullet>().SetData(id, _gunConfig.damage, _gunConfig.speed);
+            bullet.GetComponent<Bullet>().SetData(id, _player.PlayerName, _gunConfig.damage, _gunConfig.speed, _logger);
         }
 
         private void FixedUpdate()
