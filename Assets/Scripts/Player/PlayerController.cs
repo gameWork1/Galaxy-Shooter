@@ -149,6 +149,7 @@ public class PlayerController : NetworkBehaviour, IDisposable
         { 
             _rb.linearVelocity = _direction * _speed;
             if(_inputActions.Player.Shoot.IsPressed()) _gun.Shoot();
+            if(_inputActions.Player.Recharge.IsPressed()) _gun.Recharge();
         }
             
     }

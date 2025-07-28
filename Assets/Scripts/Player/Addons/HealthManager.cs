@@ -12,6 +12,7 @@ namespace Player
         [SerializeField] private int maxHealth = 100;
         [SerializeField] private Image _healthBar;
         [SerializeField] private PlayerController _player;
+        [SerializeField] private int healthRegenerateAmount, healthRegenerateDelay;
         [SyncVar(hook = nameof(OnChangeHealth))] private int health;
         [SyncVar(hook = nameof(OnChangeStateDead))] private bool isDead;
         
@@ -27,6 +28,7 @@ namespace Player
         {
             health = maxHealth;
             _uiManager = FindObjectOfType<UIManager>();
+            StartCoroutine(HealthRegenerator());
         }
 
         private void OnChangeStateDead(bool oldState, bool newState)
@@ -80,6 +82,26 @@ namespace Player
                 count--;
             }
             CmdRespawn();
+        }
+
+        private IEnumerator HealthRegenerator()
+        {
+            while (true)
+            {
+                if (health < maxHealth)
+                {
+                    if (health + healthRegenerateAmount >= maxHealth)
+                    {
+                        health = maxHealth;
+                    }
+                    else
+                    {
+                        health += healthRegenerateAmount;
+                    }
+                }
+
+                yield return new WaitForSeconds(healthRegenerateDelay);
+            }
         }
 
         [Command(requiresAuthority = false)]

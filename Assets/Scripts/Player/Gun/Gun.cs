@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Logger;
 using Mirror;
 using Mirror.BouncyCastle.Math.Field;
@@ -19,7 +20,8 @@ namespace Player.Gun
         
         private int ammoCount;
         private float shootDelay;
-        private float rechargeDelay;
+
+        private Coroutine _rechargeCoroutine;
 
         private void Start()
         {
@@ -38,17 +40,36 @@ namespace Player.Gun
         [Client]
         public void Shoot()
         {
-            if (shootDelay <= 0 && ammoCount > 0)
+            if (shootDelay <= 0 && ammoCount > 0 && _rechargeCoroutine == null)
             {
                 CmdShoot(NetworkClient.connection.identity.netId, _startPosition.position, transform.rotation);
                 shootDelay = _gunConfig.shootDelay;
                 ChangeAmmoCount(ammoCount - 1);
                 if (ammoCount == 0)
                 {
-                    rechargeDelay = _gunConfig.rechargeTime;
+                    Recharge();
                 }
             }
                 
+        }
+
+        [Client]
+        public void Recharge()
+        {
+            if (_rechargeCoroutine != null || ammoCount == _gunConfig.maxAmmoCount) return;
+            
+            _rechargeCoroutine = StartCoroutine(RechargeCoroutine());
+        }
+
+        private IEnumerator RechargeCoroutine()
+        {
+            ChangeAmmoCount(0);
+            
+            yield return new WaitForSeconds(_gunConfig.rechargeTime);
+            
+            ChangeAmmoCount(_gunConfig.maxAmmoCount);
+
+            _rechargeCoroutine = null;
         }
 
         [Command(requiresAuthority = false)]
@@ -66,14 +87,6 @@ namespace Player.Gun
             if (!isLocalPlayer) return;
             
             if (shootDelay > 0) shootDelay -= Time.deltaTime;
-            if (rechargeDelay > 0)
-            {
-                rechargeDelay -= Time.deltaTime;
-                if (rechargeDelay <= 0)
-                {
-                    ChangeAmmoCount(_gunConfig.maxAmmoCount);
-                }
-            }
             
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3 direction = mousePosition - transform.position;

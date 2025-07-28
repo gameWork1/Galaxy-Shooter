@@ -73,6 +73,15 @@ namespace Player
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Recharge"",
+                    ""type"": ""Button"",
+                    ""id"": ""2fdcd0e3-1f39-49f1-af62-e3ccb7ca1976"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -339,6 +348,17 @@ namespace Player
                     ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0768fc1e-a74f-45eb-8902-b29d63cb779a"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Recharge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -461,6 +481,7 @@ namespace Player
             m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
             m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
             m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
+            m_Player_Recharge = m_Player.FindAction("Recharge", throwIfNotFound: true);
             // Chat
             m_Chat = asset.FindActionMap("Chat", throwIfNotFound: true);
             m_Chat_Toggle = m_Chat.FindAction("Toggle", throwIfNotFound: true);
@@ -537,6 +558,7 @@ namespace Player
         private readonly InputAction m_Player_Interact;
         private readonly InputAction m_Player_Jump;
         private readonly InputAction m_Player_Shoot;
+        private readonly InputAction m_Player_Recharge;
         public struct PlayerActions
         {
             private @InputActions m_Wrapper;
@@ -546,6 +568,7 @@ namespace Player
             public InputAction @Interact => m_Wrapper.m_Player_Interact;
             public InputAction @Jump => m_Wrapper.m_Player_Jump;
             public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
+            public InputAction @Recharge => m_Wrapper.m_Player_Recharge;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -570,6 +593,9 @@ namespace Player
                 @Shoot.started += instance.OnShoot;
                 @Shoot.performed += instance.OnShoot;
                 @Shoot.canceled += instance.OnShoot;
+                @Recharge.started += instance.OnRecharge;
+                @Recharge.performed += instance.OnRecharge;
+                @Recharge.canceled += instance.OnRecharge;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -589,6 +615,9 @@ namespace Player
                 @Shoot.started -= instance.OnShoot;
                 @Shoot.performed -= instance.OnShoot;
                 @Shoot.canceled -= instance.OnShoot;
+                @Recharge.started -= instance.OnRecharge;
+                @Recharge.performed -= instance.OnRecharge;
+                @Recharge.canceled -= instance.OnRecharge;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -712,6 +741,7 @@ namespace Player
             void OnInteract(InputAction.CallbackContext context);
             void OnJump(InputAction.CallbackContext context);
             void OnShoot(InputAction.CallbackContext context);
+            void OnRecharge(InputAction.CallbackContext context);
         }
         public interface IChatActions
         {
