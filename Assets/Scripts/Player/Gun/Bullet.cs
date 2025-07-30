@@ -2,6 +2,7 @@ using System;
 using Logger;
 using Mirror;
 using UnityEngine;
+using Zenject;
 
 namespace Player.Gun
 {
@@ -14,24 +15,30 @@ namespace Player.Gun
         [SyncVar] private float _speed;
         [SyncVar] private bool _isDamaged = false;
         private LoggerManager _logger;
+        private GameManager _gameManager;
 
-        public void SetData(uint id, string senderName, int damage, float speed, LoggerManager logger)
+        [Inject]
+        private void Construct(LoggerManager logger, GameManager gameManager)
+        {
+            _logger = logger;
+            _gameManager = gameManager;
+        }
+        
+        public void SetData(uint id, string senderName, int damage, float speed)
         {
             _senderId = id;
             _damage = damage;
             _speed = speed;
-            _logger = logger;
             _senderName = senderName;
-            CmdSetGlobalData(id, senderName, damage, speed, logger);   
+            CmdSetGlobalData(id, senderName, damage, speed);   
         }
 
         [Command(requiresAuthority = false)]
-        private void CmdSetGlobalData(uint id, string senderName, int damage, float speed, LoggerManager logger)
+        private void CmdSetGlobalData(uint id, string senderName, int damage, float speed)
         {
             _senderId = id;
             _damage = damage;
             _speed = speed;
-            _logger = logger;
             _senderName = senderName;
         }
 
@@ -60,7 +67,11 @@ namespace Player.Gun
                 {
                     if (_player.Health - _damage <= 0)
                     {
-                        _logger.AddPlayerKillMessage(_senderName, _player.PlayerName);
+                        if (NetworkServer.spawned.TryGetValue(_senderId, out var senderPlayerObj))
+                        {
+                            senderPlayerObj.GetComponent<PlayerController>().TargetKill(senderPlayerObj.connectionToClient, _player.PlayerName);
+                        }
+                        
                     }
                     _player.TakeDamage(_damage);
                     _isDamaged = true;
@@ -77,6 +88,7 @@ namespace Player.Gun
             
             NetworkServer.Destroy(gameObject);
         }
+
         
     }
 }

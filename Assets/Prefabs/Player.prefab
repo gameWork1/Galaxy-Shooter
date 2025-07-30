@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: WorkCave
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 85908d4f81af2354582c3902a866bb4f, type: 2}
   m_sharedMaterial: {fileID: 3969283887731503346, guid: 85908d4f81af2354582c3902a866bb4f, type: 2}
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.25
+  m_fontSize: 2
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -899,9 +899,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5275781426061417639, guid: 797cf79ed9db3e04b9184ddcbf8dde13, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5796917650050425581, guid: 797cf79ed9db3e04b9184ddcbf8dde13, type: 3}
       propertyPath: m_Name
       value: GunPistol
+      objectReference: {fileID: 0}
+    - target: {fileID: 5796917650050425581, guid: 797cf79ed9db3e04b9184ddcbf8dde13, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8565779508773933595, guid: 797cf79ed9db3e04b9184ddcbf8dde13, type: 3}
       propertyPath: _player

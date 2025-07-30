@@ -2,9 +2,8 @@ using System;
 using System.Collections;
 using Logger;
 using Mirror;
-using Mirror.BouncyCastle.Math.Field;
-using TMPro;
 using UnityEngine;
+using Zenject;
 
 namespace Player.Gun
 {
@@ -14,22 +13,36 @@ namespace Player.Gun
         [SerializeField] private GunSO _gunConfig;
         [SerializeField] private Transform _startPosition;
         [SerializeField] private PlayerController _player;
+        [SerializeField] private GameObject _spriteGun;
+        [SerializeField] private GameObject _shootSound;
+        [SyncVar(hook = nameof(SpriteStateHook))] private bool _spriteState = false;
         
         private UIManager _uiManager;
-        private LoggerManager _logger;
+        private SceneContext _sceneContext;
         
         private int ammoCount;
         private float shootDelay;
 
         private Coroutine _rechargeCoroutine;
 
-        private void Start()
+        [Inject]
+        private void Construct( UIManager uiManager)
         {
-            _uiManager = FindObjectOfType<UIManager>();
-            _logger = FindObjectOfType<LoggerManager>();
+            _uiManager = uiManager;
             ChangeAmmoCount(_gunConfig.maxAmmoCount);
         }
+        
+        private void Start()
+        {
+            _sceneContext = FindFirstObjectByType<SceneContext>();
+        }
 
+        private void SpriteStateHook(bool oldState, bool newState)
+        {
+            _spriteState = newState;
+            _spriteGun.SetActive(newState);
+        }
+        
         private void ChangeAmmoCount(int count)
         {
             ammoCount = count;
@@ -51,6 +64,18 @@ namespace Player.Gun
                 }
             }
                 
+        }
+
+        public void SetSpriteState(bool state)
+        {
+            _spriteGun.SetActive(state);  
+            CmdSetSpriteState(state);
+        }
+
+        [Command(requiresAuthority = false)]
+        private void CmdSetSpriteState(bool state)
+        {
+            _spriteState = state;  
         }
 
         [Client]
@@ -75,11 +100,17 @@ namespace Player.Gun
         [Command(requiresAuthority = false)]
         private void CmdShoot(uint id, Vector3 position, Quaternion rotation)
         {
-            GameObject bullet = Instantiate(_bulletPrefab, position, rotation);
+            GameObject bulletObj = Instantiate(_bulletPrefab, position, rotation);
+            GameObject shootSound = Instantiate(_shootSound, position, Quaternion.identity);
             
-            NetworkServer.Spawn(bullet);
+            Bullet _bullet = bulletObj.GetComponent<Bullet>();
             
-            bullet.GetComponent<Bullet>().SetData(id, _player.PlayerName, _gunConfig.damage, _gunConfig.speed, _logger);
+            _sceneContext.Container.Inject(_bullet);
+            
+            _bullet.SetData(id, _player.PlayerName, _gunConfig.damage, _gunConfig.speed);
+            
+            NetworkServer.Spawn(bulletObj);
+            NetworkServer.Spawn(shootSound);
         }
 
         private void FixedUpdate()

@@ -50,10 +50,13 @@ public class NetworkDiscoveryHandler : MonoBehaviour
 
     public void StartClient(ServerResponse _serverResponse)
     {
-        if (!(NetworkManager.singleton as CustomNetworkManager).isNicknameEmpty())
+        if (NetworkManager.singleton is CustomNetworkManager manager)
         {
-            _networkDiscovery.StopDiscovery();
-            NetworkManager.singleton.StartClient(_serverResponse.uri);
+            if (!manager.isNicknameEmpty())
+            {
+                _networkDiscovery.StopDiscovery();
+                manager.StartClient(_serverResponse.uri);
+            }
         }
        
     }

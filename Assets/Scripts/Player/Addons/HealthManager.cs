@@ -88,19 +88,25 @@ namespace Player
         {
             while (true)
             {
-                if (health < maxHealth)
-                {
-                    if (health + healthRegenerateAmount >= maxHealth)
-                    {
-                        health = maxHealth;
-                    }
-                    else
-                    {
-                        health += healthRegenerateAmount;
-                    }
-                }
+                CmdRegenerateHealth();
 
                 yield return new WaitForSeconds(healthRegenerateDelay);
+            }
+        }
+
+        [Command(requiresAuthority = false)]
+        private void CmdRegenerateHealth()
+        {
+            if (health < maxHealth)
+            {
+                if (health + healthRegenerateAmount >= maxHealth)
+                {
+                    health = maxHealth;
+                }
+                else
+                {
+                    health += healthRegenerateAmount;
+                }
             }
         }
 

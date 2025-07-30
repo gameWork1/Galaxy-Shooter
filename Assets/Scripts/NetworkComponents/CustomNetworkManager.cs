@@ -53,12 +53,10 @@ namespace Network
             GameObject player = Instantiate(playerPrefab, startPos.position, startPos.rotation);
             NetworkServer.AddPlayerForConnection(conn, player);
             
-            PlayerController _player = player.GetComponent<PlayerController>();
-            
-            if (_player != null)
-            {
-                _player.TargetSetUpLocalNickname(conn);
-            }else Debug.Log(1);
+            // if (_player != null)
+            // {
+            //     _player.TargetSetUpLocalNickname(conn);
+            // }else Debug.Log(1);
         }
         
     }

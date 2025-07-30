@@ -1,4 +1,5 @@
 using System;
+using Logger;
 using Mirror;
 using Network;
 using Player;
@@ -6,6 +7,7 @@ using Player.Gun;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Zenject;
 
 public class PlayerController : NetworkBehaviour, IDisposable
 {
@@ -21,6 +23,9 @@ public class PlayerController : NetworkBehaviour, IDisposable
     [SerializeField] private GameObject _visualObjects;
     [SerializeField] private int _deadTime;
 
+    private GameManager _gameManager;
+    private LoggerManager _logger;
+    
     public int Health
     {
         get { return _healthManager.Health; }
@@ -31,6 +36,19 @@ public class PlayerController : NetworkBehaviour, IDisposable
     private bool isUsing = false;
     private bool isDead = false;
     [SyncVar(hook = nameof(OnChangeTrigger))] private bool isTrigger;
+
+    [Inject]
+    private void Construct(GameManager gameManager, LoggerManager logger)
+    {
+        _gameManager = gameManager;
+        _logger = logger;
+
+        if (isLocalPlayer)
+        {
+            _gameManager.SetPlayer(this);
+            SetUpLocalNickname();
+        }
+    }
 
     private void OnChangeTrigger(bool oldTrigger, bool newTrigger)
     {
@@ -49,14 +67,38 @@ public class PlayerController : NetworkBehaviour, IDisposable
     }
     
     [TargetRpc]
-    public void TargetSetUpLocalNickname(NetworkConnection target)
+    public void TargetKill(NetworkConnection target, string killedPlayerName)
+    {
+        CmdKillMessage(killedPlayerName, _logger);
+        _gameManager.KilledPlayer(PlayerName);
+    }
+
+    [Command(requiresAuthority = false)]
+    private void CmdKillMessage(string killedPlayerName, LoggerManager logger)
+    {
+        logger.AddPlayerKillMessage(PlayerName, killedPlayerName);
+    }
+    
+    public void SetUpLocalNickname()
     {
         if (NetworkManager.singleton is CustomNetworkManager manager)
         {
             string name = manager.GetNickName();
-            _nicknameManager.CmdSetNickname(name);
+            _nicknameManager.SetNickname(name);
             _nicknameManager.LogJoin(name);
+            _gameManager.AddPlayer(name);
         }
+    }
+
+    public void StartGame()
+    {
+        _gun.SetSpriteState(true);
+        Respawn();
+    }
+
+    public void StopGame()
+    {
+        _gun.SetSpriteState(false);
     }
     
     private void Start()
@@ -76,6 +118,11 @@ public class PlayerController : NetworkBehaviour, IDisposable
 
     public override void OnStartClient()
     {
+        if (!isLocalPlayer) return;
+        var sceneContext = FindFirstObjectByType<SceneContext>();
+        sceneContext.Container.Inject(_gun);
+        sceneContext.Container.Inject(_nicknameManager);
+        sceneContext.Container.Inject(this);
         _startPosition = transform.position;
     }
 
@@ -96,11 +143,16 @@ public class PlayerController : NetworkBehaviour, IDisposable
 
     public void Respawn()
     {
-        if (!isDead) return;
         isDead = false;
-        transform.position = _startPosition;
+        isTrigger = false;
         _visualObjects.SetActive(true);
         CmdRespawn();
+    }
+
+    [TargetRpc]
+    private void TargetRespawn(NetworkConnection target)
+    {
+        transform.position = _startPosition;
     }
 
     [Command(requiresAuthority = false)]
@@ -108,6 +160,7 @@ public class PlayerController : NetworkBehaviour, IDisposable
     {
         _visualObjects.SetActive(true);
         isTrigger = false;
+        TargetRespawn(GetComponent<NetworkIdentity>().connectionToClient);
     }
 
     public void SetUsing(bool active)
@@ -117,7 +170,7 @@ public class PlayerController : NetworkBehaviour, IDisposable
 
     private void ChangeDirection(InputAction.CallbackContext _context)
     {
-        if (isDead || isUsing) return;
+        if (!isLocalPlayer || isDead || isUsing) return;
         
         _direction = _context.ReadValue<Vector2>();
 
@@ -148,8 +201,8 @@ public class PlayerController : NetworkBehaviour, IDisposable
         if (!isUsing && !isDead)
         { 
             _rb.linearVelocity = _direction * _speed;
-            if(_inputActions.Player.Shoot.IsPressed()) _gun.Shoot();
-            if(_inputActions.Player.Recharge.IsPressed()) _gun.Recharge();
+            if(_inputActions.Player.Shoot.IsPressed() && _gameManager.IsGameStarted) _gun.Shoot();
+            if(_inputActions.Player.Recharge.IsPressed() && _gameManager.IsGameStarted) _gun.Recharge();
         }
             
     }

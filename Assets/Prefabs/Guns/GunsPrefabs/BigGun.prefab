@@ -142,6 +142,8 @@ MonoBehaviour:
   _gunConfig: {fileID: 11400000, guid: 44bea254b52887b4a9f885bfac8cee70, type: 2}
   _startPosition: {fileID: 1917858873624534083}
   _player: {fileID: 0}
+  _spriteGun: {fileID: 5275781426061417639}
+  _shootSound: {fileID: 4599450298340610975, guid: 78ffc3c0d1396f24c801841cb9e92b4d, type: 3}
 --- !u!114 &8010733236361244831
 MonoBehaviour:
   m_ObjectHideFlags: 0

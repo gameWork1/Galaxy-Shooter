@@ -2,6 +2,7 @@ using Logger;
 using Mirror;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 namespace Player
 {
@@ -19,10 +20,11 @@ namespace Player
         
         private LoggerManager _logger;
         [SyncVar] private bool isJoined = false;
-        
-        public override void OnStartClient()
+
+        [Inject]
+        private void Construct(LoggerManager logger)
         {
-            _logger = FindObjectOfType<LoggerManager>();
+            _logger = logger;
         }
         
         [Client]
@@ -31,19 +33,24 @@ namespace Player
             if (!isJoined)
             {
                 isJoined = true;
-                CmdLogInJoin(name);
+                CmdLogInJoin(name, _logger);
             }
            
         }
     
         [Command(requiresAuthority = false)]
-        private void CmdLogInJoin(string name)
+        private void CmdLogInJoin(string name, LoggerManager logger)
         {
-            _logger.AddPlayerConnectedMessage(name);
+            logger.AddPlayerConnectedMessage(name);
+        }
+
+        public void SetNickname(string text)
+        {
+            CmdSetNickname(text);
         }
 
         [Command(requiresAuthority = false)]
-        public void CmdSetNickname(string text)
+        private void CmdSetNickname(string text)
         {
             _playerName = text;
         }
