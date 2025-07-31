@@ -15,7 +15,7 @@ namespace Network
 
         public void ChangePlayerName(string newText) => _playerName = newText;
 
-        public bool isNicknameEmpty() => string.IsNullOrEmpty(_playerName) || _playerName == "";
+        public bool isNicknameEmpty() => string.IsNullOrEmpty(_playerName) || _playerName.Trim() == "";
 
         public string GetNickName() => _playerName;
 

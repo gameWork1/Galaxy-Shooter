@@ -86,6 +86,8 @@ namespace Player
 
         private IEnumerator HealthRegenerator()
         {
+            if (!isLocalPlayer) yield break;
+            
             while (true)
             {
                 CmdRegenerateHealth();

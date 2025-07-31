@@ -58,10 +58,6 @@ namespace Player.Gun
                 CmdShoot(NetworkClient.connection.identity.netId, _startPosition.position, transform.rotation);
                 shootDelay = _gunConfig.shootDelay;
                 ChangeAmmoCount(ammoCount - 1);
-                if (ammoCount == 0)
-                {
-                    Recharge();
-                }
             }
                 
         }
@@ -118,6 +114,7 @@ namespace Player.Gun
             if (!isLocalPlayer) return;
             
             if (shootDelay > 0) shootDelay -= Time.deltaTime;
+            if (ammoCount == 0 && _rechargeCoroutine == null) Recharge();
             
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3 direction = mousePosition - transform.position;

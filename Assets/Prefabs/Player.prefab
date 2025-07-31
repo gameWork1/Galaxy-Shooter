@@ -233,7 +233,7 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  maxHealth: 100
+  maxHealth: 50
   _healthBar: {fileID: 5243800448609794872}
   _player: {fileID: 5336221392141039815}
   healthRegenerateAmount: 3
