@@ -24,7 +24,7 @@ public class GameManager : NetworkBehaviour
     private void TimerHook(int oldTime, int newTime)
     {
         timer = newTime;
-        _timerText.text = $"{newTime / 60}:{newTime % 60}";
+        _timerText.text = $"{newTime / 60}:{newTime % 60 / 10}{newTime % 60 % 10}";
     }
 
     [Client]

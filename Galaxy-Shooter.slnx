@@ -1,0 +1,27 @@
+﻿<Solution>
+  <Project Path="Zenject.csproj" />
+  <Project Path="Zenject-IntegrationTests-Editor.csproj" />
+  <Project Path="Unity.Mirror.CodeGen.csproj" />
+  <Project Path="Edgegap.csproj" />
+  <Project Path="Mirror.Components.csproj" />
+  <Project Path="Zenject-ReflectionBaking-Editor.csproj" />
+  <Project Path="Mirror.Editor.csproj" />
+  <Project Path="Zenject-UnitTests-Editor.csproj" />
+  <Project Path="Zenject-Editor.csproj" />
+  <Project Path="Zenject-IntegrationTests.csproj" />
+  <Project Path="kcp2k.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Mirror.csproj" />
+  <Project Path="SimpleWebTransport.csproj" />
+  <Project Path="Mirror.Authenticators.csproj" />
+  <Project Path="Mirror.Transports.csproj" />
+  <Project Path="EncryptionTransportEditor.csproj" />
+  <Project Path="Zenject-TestFramework.csproj" />
+  <Project Path="Telepathy.csproj" />
+  <Project Path="UTPTests.csproj" />
+  <Project Path="ParrelSync.csproj" />
+  <Project Path="Zenject-PoolMonitor-Editor.csproj" />
+  <Project Path="UtpTransport.csproj" />
+  <Project Path="Mirror.CompilerSymbols.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+</Solution>
